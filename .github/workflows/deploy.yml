@@ -29,8 +29,6 @@ jobs:
 
       - name: 🗜️ Empaquetar para Elastic Beanstalk
         run: |
-          cp ApiNetCoreAws/Procfile ApiNetCoreAws/out/Procfile
-          cp -r ApiNetCoreAws/.ebextensions ApiNetCoreAws/out/.ebextensions
           cd ApiNetCoreAws/out
           zip -r ../../deploy.zip .
           cd ../..
