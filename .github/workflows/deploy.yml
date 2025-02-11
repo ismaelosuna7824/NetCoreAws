@@ -25,15 +25,12 @@ jobs:
         with:
           dotnet-version: '8.0.400'
 
-      - name: Move to folder
-        run:  cd ApiNetCoreAws/ApiNetCoreAws
-
       - name: 🔨 Construir aplicación
-        run: dotnet publish -c Release -o out
+        run: dotnet  publish ApiNetCoreAws/ApiNetCoreAws.csproj -c Release -o out
 
       - name: 🗜️ Empaquetar para Elastic Beanstalk
         run: |
-          cd out
+          cd ApiNetCoreAws/ApiNetCoreAws/out
           zip -r ../deploy.zip .
           cd ..
 
@@ -46,4 +43,4 @@ jobs:
           environment_name: "NetcoreApi-env"  # Cambia por tu entorno en EB
           version_label: "deploy-${{ github.run_id }}"
           region: "us-east-1"
-          deployment_package: deploy.zip
+          deployment_package: ApiNetCoreAws/ApiNetCoreAws/deploy.zip
