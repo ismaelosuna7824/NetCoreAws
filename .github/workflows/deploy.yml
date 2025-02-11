@@ -3,7 +3,7 @@ name: Deploy .NET to Elastic Beanstalk
 on:
   push:
     branches:
-      - main  
+      - main  # Cambia según tu rama de despliegue
 
 jobs:
   deploy:
@@ -13,28 +13,32 @@ jobs:
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
 
+      - name: 📂 Verificar estructura de archivos
+        run: ls -R
+     
+      - name: 🔧 Configurar .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.400'  # Cambia según la versión de tu proyecto
+
+      - name: 📦 Restaurar dependencias
+        run: dotnet restore ApiNetCoreAws/ApiNetCoreAws.sln
+
+      - name: 🔨 Construir aplicación
+        run: dotnet publish ApiNetCoreAws/ApiNetCoreAws/ApiNetCoreAws.csproj -c Release -o ApiNetCoreAws/out
+
+      - name: 🗜️ Empaquetar para Elastic Beanstalk
+        run: |
+          cd ApiNetCoreAws/out
+          zip -r ../../deploy.zip .
+          cd ../..
+
       - name: 🔑 Configurar credenciales de AWS
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1  # Cambia a tu región
-
-      # - name: 🔧 Configurar .NET
-      #   uses: actions/setup-dotnet@v3
-      #   with:
-      #     dotnet-version: '8.0.400'
-      - name: 📦 Mostrar estructura de archivos
-        run: ls -R
-
-      - name: 🔨 Construir aplicación
-        run: dotnet  publish ApiNetCoreAws/ApiNetCoreAws.csproj -c Release -o out
-
-      - name: 🗜️ Empaquetar para Elastic Beanstalk
-        run: |
-          cd ApiNetCoreAws/ApiNetCoreAws/out
-          zip -r ../deploy.zip .
-          cd ..
+          aws-region: us-east-1  # Cambia según tu región
 
       - name: 🚀 Desplegar en Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
@@ -44,5 +48,5 @@ jobs:
           application_name: "netcoreApi"  # Cambia por el nombre de tu aplicación en EB
           environment_name: "NetcoreApi-env"  # Cambia por tu entorno en EB
           version_label: "deploy-${{ github.run_id }}"
-          region: "us-east-1"
+          region: "us-east-2"
           deployment_package: ApiNetCoreAws/ApiNetCoreAws/deploy.zip
