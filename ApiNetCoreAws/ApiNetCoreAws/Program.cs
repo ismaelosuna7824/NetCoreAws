@@ -7,10 +7,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.WebHost.ConfigureKestrel(serveroptions=>{
-  serveroptions.ListenAnyIP(8080);
-});
-
 var app = builder.Build();
 
 app.UseSwagger();

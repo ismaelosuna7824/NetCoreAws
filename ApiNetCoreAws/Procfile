@@ -1,1 +1,1 @@
-web: dotnet ApiNetCoreAws.dll
+web: dotnet ApiNetCoreAws.dll --urls "http://*:80"
