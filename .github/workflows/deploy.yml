@@ -34,7 +34,7 @@ jobs:
           zip -r ../../deploy.zip .
           cd ../..
 
-      - name: 🔑 Configurar credenciales de AWS
+      - name: 🔑 Configurar credenciales de AWSs
         uses: aws-actions/configure-aws-credentials@v3
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
