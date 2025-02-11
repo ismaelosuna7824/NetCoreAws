@@ -30,6 +30,7 @@ jobs:
       - name: 🗜️ Empaquetar para Elastic Beanstalk
         run: |
           cp ApiNetCoreAws/Procfile ApiNetCoreAws/out/Procfile
+          cp -r ApiNetCoreAws/.ebextensions ApiNetCoreAws/out/.ebextensions
           cd ApiNetCoreAws/out
           zip -r ../../deploy.zip .
           cd ../..
@@ -40,11 +41,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2  # Cambia según tu región
-      - name: 🔧 Configurar variables de entorno en Elastic Beanstalk
-        run: |
-         aws elasticbeanstalk update-environment --environment-name "NetcoreApi-env" --option-settings "Namespace=aws:elasticbeanstalk:application:environment,OptionName=PORT,Value=5000"
-
-
+    
       - name: 🚀 Desplegar en Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
