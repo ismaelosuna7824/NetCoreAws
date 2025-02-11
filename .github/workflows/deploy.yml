@@ -1,0 +1,49 @@
+name: Deploy .NET to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🔑 Configurar credenciales de AWS
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Cambia a tu región
+
+      - name: 🔧 Configurar .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'  # Cambia según la versión de tu proyecto
+
+      - name: 📦 Restaurar dependencias
+        run: dotnet restore
+
+      - name: 🔨 Construir aplicación
+        run: dotnet publish -c Release -o out
+
+      - name: 🗜️ Empaquetar para Elastic Beanstalk
+        run: |
+          cd out
+          zip -r ../deploy.zip .
+          cd ..
+
+      - name: 🚀 Desplegar en Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: "netcoreApi"  # Cambia por el nombre de tu aplicación en EB
+          environment_name: "NetcoreApi-env"  # Cambia por tu entorno en EB
+          version_label: "deploy-${{ github.run_id }}"
+          region: "us-east-1"
+          deployment_package: deploy.zip
