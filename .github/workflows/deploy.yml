@@ -23,7 +23,10 @@ jobs:
       - name: 🔧 Configurar .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'  # Cambia según la versión de tu proyecto
+          dotnet-version: '8.0.400'
+
+      - name: Move to folder
+        run:  cd ApiNetCoreAws/ApiNetCoreAws
 
       - name: 📦 Restaurar dependencias
         run: dotnet restore
