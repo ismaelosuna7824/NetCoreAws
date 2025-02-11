@@ -10,9 +10,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
-	<ItemGroup>
-		<None Include=".ebextensions\env.config" CopyToOutputDirectory="Always" />
-		<None Include="Procfile" CopyToOutputDirectory="Always" />
-  </ItemGroup>
-
 </Project>
