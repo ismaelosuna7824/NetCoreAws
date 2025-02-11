@@ -41,7 +41,7 @@ jobs:
           aws-region: us-east-1  # Cambia según tu región
 
       - name: 🚀 Desplegar en Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v21
+        uses: einaregilsson/beanstalk-deploy@v22
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -49,4 +49,4 @@ jobs:
           environment_name: "NetcoreApi-env"  # Cambia por tu entorno en EB
           version_label: "deploy-${{ github.run_id }}"
           region: "us-east-2"
-          deployment_package: ApiNetCoreAws/ApiNetCoreAws/deploy.zip
+          deployment_package: deploy.zip
