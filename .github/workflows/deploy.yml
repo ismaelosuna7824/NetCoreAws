@@ -3,23 +3,21 @@ name: Deploy .NET to Elastic Beanstalk
 on:
   push:
     branches:
-      - main  # Cambia según tu rama de despliegue
+      - main  
 
 jobs:
-  deploy:
+  build:
+    name: Build application .net
     runs-on: ubuntu-latest
 
     steps:
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
-
-      - name: 📂 Verificar estructura de archivos
-        run: ls -R
      
       - name: 🔧 Configurar .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.400'  # Cambia según la versión de tu proyecto
+          dotnet-version: '8.0.400' 
 
       - name: 📦 Restaurar dependencias
         run: dotnet restore ApiNetCoreAws/ApiNetCoreAws.sln
@@ -32,14 +30,30 @@ jobs:
           cd ApiNetCoreAws/out
           zip -r ../../deploy.zip .
           cd ../..
+        
+      - name: Subir el codigo a los artefcatos
+        uses: actions/upload-artifacts@v3
+        with:
+          name: deploy-package
+          path: deploy.zip
     
+  deploy:
+    runs-on: ubuntu-latest
+    name: deploy application
+    needs: build
+    steps:
+      - name: Download deploy-package
+        uses: actions/upload-artifacts
+        with:
+          name: deploy-package
+
       - name: 🚀 Desplegar en Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v22
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: "netcoreApi"  # Cambia por el nombre de tu aplicación en EB
-          environment_name: "NetcoreApi-env"  # Cambia por tu entorno en EB
+          application_name: "netcoreApi" 
+          environment_name: "NetcoreApi-env"  
           version_label: "deploy-${{ github.run_id }}"
           region: "us-east-2"
           deployment_package: deploy.zip
