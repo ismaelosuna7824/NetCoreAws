@@ -13,6 +13,6 @@
   <ItemGroup>
     <None Include=".ebextensions\env.config" CopyToOutputDirectory="Always" />
     <None Include="Procfile" CopyToOutputDirectory="Always" />
-  <ItemGroup />
+  </ItemGroup>
 
 </Project>
